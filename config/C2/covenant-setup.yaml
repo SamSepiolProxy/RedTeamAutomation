@@ -1,0 +1,51 @@
+- become: yes
+  hosts: all
+  name: covenant-setup
+  tasks:
+
+    - name: Update all the things
+      apt:
+        upgrade: dist
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Reboot
+      reboot:
+        reboot_timeout: 3600
+
+    - name: Install signing key
+      apt:
+        deb: https://packages.microsoft.com/config/ubuntu/20.04/packages-microsoft-prod.deb
+
+    - name: Install apt-transport-https
+      apt:
+        name: apt-transport-https
+        state: latest
+
+    - name: Install .NET Core 3.1 SDK
+      apt:
+        name: dotnet-sdk-3.1
+        update_cache: yes
+        state: present
+        
+    - name: Clone Covenant
+      git:
+        repo: https://github.com/cobbr/Covenant.git
+        recursive: yes
+        dest: /opt/Covenant
+
+    - name: Build Covenant
+      shell:
+        chdir: /opt/Covenant/Covenant
+        cmd: dotnet build -c Release
+
+    - name: Install as service
+      copy:
+        src: covenant.service
+        dest: /etc/systemd/system/covenant.service
+
+    - name: Covenant Service
+      service:
+        name: covenant.service
+        enabled: yes
+        state: started

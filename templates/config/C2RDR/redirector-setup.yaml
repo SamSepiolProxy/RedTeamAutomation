@@ -1,0 +1,81 @@
+- become: yes
+  hosts: all
+  name: redirector-setup
+  tasks:
+
+    - name: Update all the things
+      apt:
+        upgrade: dist
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Reboot
+      reboot:
+        reboot_timeout: 3600
+
+    - name: Install apache2
+      apt:
+        name: apache2
+        state: latest
+
+    - name: Enable ssl module
+      apache2_module:
+        name: ssl
+
+    - name: Enable mod_rewrite module
+      apache2_module:
+        name: rewrite
+
+    - name: Enable proxy module
+      apache2_module:
+        name: proxy
+
+    - name: Enable proxy_http module
+      apache2_module:
+        name: proxy_http
+
+    - name: Register certbot
+      shell: a2ensite default-ssl.conf
+
+    - name: Copy 000-default.conf
+      copy:
+        src: 000-default.conf
+        dest: /etc/apache2/sites-enabled/000-default.conf
+
+    - name: Copy default-ssl.conf
+      copy:
+        src: default-ssl.conf
+        dest: /etc/apache2/sites-enabled/default-ssl.conf
+
+    - name: Copy apache2.conf
+      copy:
+        src: apache2.conf
+        dest: /etc/apache2/apache2.conf
+
+    - name: Copy ssl.conf
+      copy:
+        src: ssl.conf
+        dest: /etc/apache2/mods-enabled/ssl.conf
+    
+    - name: Copy rewrite.rules
+      copy:
+        src: redirect.rules
+        dest: /etc/apache2/redirect.rules
+
+    - name: Install certbot
+      apt:
+        name: certbot
+        state: latest
+        
+    - name: Stop apache
+      service:
+        name: apache2
+        state: stopped
+
+    - name: Register certbot
+      shell: sudo certbot certonly --standalone -d {{ C2redirectordomain }} -d www.{{ C2redirectordomain }} --non-interactive --agree-tos --register-unsafely-without-email
+
+    - name: Start apache
+      service:
+        name: apache2
+        state: started

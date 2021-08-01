@@ -1,0 +1,5 @@
+ip_whitelist = "{{ IP }}"
+adminaccountusername = "redteamuser"
+c2_redirector_domain = "{{ C2redirectordomain }}"
+public_key = "./keys/id_rsa.pub"
+resourcename = "{{ resourcegroupname }}"

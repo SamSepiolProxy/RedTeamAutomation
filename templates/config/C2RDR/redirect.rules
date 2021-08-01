@@ -1,0 +1,11 @@
+Define REDIR_TARGET example.com
+Define COMMANDSERVERIP 10.10.0.4
+
+RewriteEngine On
+RewriteOptions Inherit
+
+LogLevel alert rewrite:trace5
+
+RewriteCond %{REQUEST_URI} ^/(en-us/index.html|en-us/test.html)/?$
+RewriteRule ^.*$ %{REQUEST_SCHEME}://${COMMANDSERVERIP}%{REQUEST_URI} [P]
+RewriteRule ^.*$ %{REQUEST_SCHEME}://${REDIR_TARGET}  [L,R=302]

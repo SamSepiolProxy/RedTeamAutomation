@@ -1,0 +1,14 @@
+[Unit]
+Description=Covenant service
+After=network.target
+StartLimitIntervalSec=0
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=root
+WorkingDirectory=/opt/Covenant/Covenant
+ExecStart=/usr/bin/dotnet /opt/Covenant/Covenant/bin/Release/netcoreapp3.1/Covenant.dll
+
+[Install]
+WantedBy=multi-user.target
