@@ -39,7 +39,7 @@ resource "azurerm_linux_virtual_machine" "C2" {
   location              = var.resourcegrouplocation
   resource_group_name   = var.resourcegroupname
   network_interface_ids = [azurerm_network_interface.C2.id]
-  size                  = "Standard_B1s"
+  size                  = "Standard_B2s"
   admin_username        = var.adminaccount
 
   disable_password_authentication = true
