@@ -1,4 +1,5 @@
 # RedTeamAutomation
+Automate deployment of Red Team Infra On Azure
 
 GruntHTTP will need adjusting\
 Line 61\
