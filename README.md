@@ -8,5 +8,4 @@ Line 858\
 ServicePointManager.SecurityProtocol = (SecurityProtocolType)3072 | SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls;
 
 ToDo\
-Add Support For Mythic
 Add Phishing and seperate payload infra
