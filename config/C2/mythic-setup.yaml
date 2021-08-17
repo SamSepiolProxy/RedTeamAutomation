@@ -1,0 +1,44 @@
+- become: yes
+  hosts: all
+  name: mythic-setup
+  tasks:
+
+    - name: Update all the things
+      apt:
+        upgrade: dist
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Reboot
+      reboot:
+        reboot_timeout: 3600
+        
+    - name: Clone Mythic
+      git:
+        repo: https://github.com/its-a-feature/Mythic.git
+        recursive: yes
+        dest: /opt/Mythic
+        
+    - name: Copy .env file for mythic
+      copy:
+        src:  .env
+        dest: /opt/Mythic/.env
+        owner: root
+        group: root
+        mode: 0555
+    
+    - name: Install Docker
+      shell:
+        chdir: /opt/Mythic
+        cmd: bash install_docker_ubuntu.sh
+
+    - name: Install as service
+      copy:
+        src: mythic.service
+        dest: /etc/systemd/system/mythic.service
+
+    - name: mythic Service
+      service:
+        name: mythic.service
+        enabled: yes
+        state: started
